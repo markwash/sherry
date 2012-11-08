@@ -13,11 +13,6 @@ log = app.logger
 class PowerDriver(object):
     """Abstraction for powering on/off nodes"""
 
-    def __init__(self, address, user, password):
-        self.address = address
-        self.user = user
-        self.password = password
-
     def power_on(self):
         """Power the node on"""
         raise NotImplementedError()
@@ -41,22 +36,24 @@ class MockPowerDriver(PowerDriver):
     """A power driver that does nothing but log the requests"""
 
     def power_on(self):
-        log.debug('Powering on at {0}@{1}, passwd: %{2}'
-                  .format(self.user, self.address, self.password))
+        log.debug('MockPowerDriver powering on.')
 
     def power_off(self):
-        log.debug('Powering off at {0}@{1}, passwd: %{2}'
-                  .format(self.user, self.address, self.password))
+        log.debug('MockPowerDriver powering off.')
 
     def reboot(self):
-        log.debug('Rebooting at {0}@{1}, passwd: %{2}'
-                  .format(self.user, self.address, self.password))
+        log.debug('MockPowerDriver rebooting.')
 
 
 class IPMIDriver(PowerDriver):
     """Power on/off using ipmitool"""
 
     IPMITOOL_PATH = '/usr/bin/ipmitool'
+
+    def __init__(self):
+        self.address = app.config['IPMI_ADDRESS']
+        self.user = app.config['IPMI_USER']
+        self.password = app.config['IPMI_PASSWORD']
 
     def _call_ipmitool(self, action):
         """Helper to call ipmitool"""
@@ -87,6 +84,10 @@ class IPMIDriver(PowerDriver):
 
 class QemuDriver(PowerDriver):
     """Power on/off Qemu/KVM virtual machines using virsh"""
+
+    def __init__(self):
+        self.user = app.config['QEMU_USER']
+        self.address = app.config['QEMU_ADDRESS']
 
     def _call_virsh(self, action):
         """Helper to call virsh"""

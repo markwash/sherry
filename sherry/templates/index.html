@@ -3,8 +3,8 @@
 {% block title %}Index{% endblock %}
 
 {% block content %}
-<h3>Reimage Queue:</h3>
-<pre>{{ reimage_queue|pprint }}</pre>
+<h3>Reimage Parameters:</h3>
+<pre>{{ reimage_info|pprint }}</pre>
 <h3>Config:</h3>
 <pre>
 {{ config.items()|pprint }}

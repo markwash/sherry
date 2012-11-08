@@ -6,7 +6,11 @@
 <body>
   <div id="header">
       {% block header %}
-      <div><a href="/">Home</a> | <a href="/reimage">Reimage</a> | <a href="/log">Log</a></div>
+      <div><a href="/">Home</a> | 
+          {% for image in images %}
+	      <a href="/reimage/{{image|e}}">Reimage to {{image}} image</a> |
+	  {% endfor %}
+	  <a href="/log">Log</a></div>
       <hr />
       {% endblock %}
   </div>
